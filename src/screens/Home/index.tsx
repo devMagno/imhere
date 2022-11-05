@@ -1,3 +1,4 @@
+import { useState } from "react"
 import {
   Text,
   View,
@@ -11,32 +12,26 @@ import { Participant } from "../../components/Participant"
 import { styles } from "./styles"
 
 export function Home() {
-  const participants = [
-    "Fulano",
-    "Ciclano",
-    "Beltrano",
-    "Sicrano",
-    "João",
-    "José",
-    "Maria",
-    "Carlos",
-    "Fred",
-    "Mery",
-  ]
+  const [participants, setParticipants] = useState<string[]>([])
+  const [participantName, setParticipantName] = useState<string>("")
 
   function handleParticipantAdd() {
-    if (participants.includes("Fred"))
+    if (participants.includes(participantName))
       return Alert.alert(
         "Participante já existente",
         "Já existe um participante na lista com esse nome."
       )
+
+    setParticipants((prevState) => [...prevState, participantName])
+    setParticipantName("")
   }
 
   function handleParticipantRemove(name: string) {
     Alert.alert("Remover", `Deseja remover o participante ${name}?`, [
       {
         text: "Sim",
-        onPress: () => Alert.alert("Deletado!"),
+        onPress: () =>
+          setParticipants((prevState) => prevState.filter((p) => p !== name)),
       },
       {
         text: "Não",
@@ -47,11 +42,13 @@ export function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.eventName}>Nome do evento</Text>
+      <Text style={styles.eventName}>Feira de Ciências</Text>
       <Text style={styles.eventDate}>Sexta, 4 de Novembro de 2022.</Text>
 
       <View style={styles.form}>
         <TextInput
+          value={participantName}
+          onChangeText={setParticipantName}
           style={styles.input}
           placeholder="Nome do participante"
           placeholderTextColor="#6B6B6B"
